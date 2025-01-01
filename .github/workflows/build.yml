@@ -1,0 +1,68 @@
+name: build and publish
+
+on: # define the events
+  push:
+    branches:
+      - "**" # start on push of any branch
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*" # or on a semantic version tag (e.g. v0.1.2)
+  workflow_dispatch: # enable manual start
+
+permissions:
+  contents: read
+
+jobs:
+  build_job:
+    name: 🔧 Build Python package
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: python -m pip install build ruff
+
+      - name: Lint code
+        run: ruff check --output-format=github --target-version=py312
+        continue-on-error: true
+
+      - name: Check code formatting
+        run: ruff format --diff --target-version=py312
+        continue-on-error: true
+
+      - name: Build release distributions
+        run: python -m build
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dists
+          path: dist/
+          retention-days: 1
+
+  deploy_job:
+    name: 🚀 Publish to PyPI
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/') # only for tag build
+    needs: build_job
+    permissions:
+      contents: write
+      id-token: write
+    environment:
+      name: pypi
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release-dists
+          path: dist/
+
+      - name: Publish release distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
