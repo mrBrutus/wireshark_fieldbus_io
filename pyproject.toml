@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wireshark_fieldbus_io"
-version = "0.2.0-rc2"
+version = "0.2.0"
 description = "Extract fieldbus IO data from Wireshark capture files."
 readme = "README.md"
 requires-python = ">=3.12"
