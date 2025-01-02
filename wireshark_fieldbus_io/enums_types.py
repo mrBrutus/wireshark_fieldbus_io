@@ -27,7 +27,7 @@ class Fieldbus(StrEnum):
 class IoPacket(MyDataClass):
     """Data packet containing the fieldbus IO data."""
 
-    pkt: int = None
+    id: int = None
     """Packet number from Wireshark log."""
     time: str = None
     """Time stamp from Wireshark log."""

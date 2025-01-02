@@ -118,7 +118,7 @@ The data packets can be exported to `.csv` file using the `export_csv` function:
 wireshark_log.export_csv(f'my-profinet-packets.csv')
 
 # Content of CSV file (partial):
-pkt,time,direction,b0,b1,b2,b3,b4,[..]
+id,time,direction,b0,b1,b2,b3,b4,[..]
 26318,2024-12-30 16:54:10.973099,snd,35,7,1,180,1,[..]
 26319,2024-12-30 16:54:10.974128,rcv,35,32,0,254,36,[..]
 26320,2024-12-30 16:54:10.974128,snd,35,8,1,180,1,[..]
